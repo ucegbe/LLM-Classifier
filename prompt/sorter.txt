@@ -1,0 +1,18 @@
+Here are a list of documents, each document is tagged by its name:
+<documents>
+{doc}
+</documents>
+
+Here are labels with their description:
+<labels>
+{label}
+</labels>
+
+Your job is to label each of the document provided to you. Each document has a single label that corresponds to one if the labels provided.
+Format your response as:
+{"1":{"document name":Name of First Document,
+    "label": Document Label},
+ "2":{"document name":Name of Second Document,
+    "label": Document Label},
+ ...
+}

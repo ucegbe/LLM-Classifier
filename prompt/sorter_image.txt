@@ -1,0 +1,13 @@
+Here are labels with their description:
+<labels>
+{label}
+</labels>
+
+Your job is to label each of the image provided to you. Each image has a single label that corresponds to one of the labels provided.
+Format your response as:
+{"1":{"image name":Name of First image,
+    "label": Image Label},
+ "2":{"image name":Name of Second image,
+    "label": Image Label},
+ ...
+}
