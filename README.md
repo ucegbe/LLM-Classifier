@@ -2,7 +2,9 @@
 
 This Python application is a document classification tool that utilizes Large Language Models (LLM) on Amazon Bedrock to classify various documents through in-context learning. The application allows users to upload PDF or image files and classify the content of these files into predefined labels or categories.
 
-The `classifier.ipyn` notebook walks you through this solution. Alternatively, there is a Strealit App that for a better user experience to classify documents.
+<img src="images/classifier.png" width="800"/>
+
+The `classifier.ipynb` notebook walks you through this solution. Alternatively, there is a Strealit App that for a better user experience to classify documents.
 
 ## Features
 
@@ -16,7 +18,7 @@ The `classifier.ipyn` notebook walks you through this solution. Alternatively, t
 
 ## To run this Streamlit App on Sagemaker Studio follow the steps below:
 
-<img src="images/chat-preview.JPG" width="800"/>
+<img src="images/classifier-UIs.JPG" width="800"/>
 
 * Set up the necessary AWS resources:
    - [Create an S3 bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html) (if not already have one) to store uploaded documents and Textract output.
