@@ -1,9 +1,7 @@
 streamlit
-langchain
 boto3
 pymupdf
 pandas
 amazon-textract-textractor==1.7.1
-anthropic
 s3fs
 openpyxl
