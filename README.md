@@ -2,10 +2,12 @@
 
 This Python application is a document classification tool that utilizes Large Language Models (LLM) on Amazon Bedrock to classify various documents through in-context learning. The application allows users to upload PDF or image files and classify the content of these files into predefined labels or categories.
 
+The `classifier.ipyn` notebook walks you through this solution. Alternatively, there is a Strealit App that for a better user experience to classify documents.
+
 ## Features
 
 - **File Upload**: Users can upload PDF or image files through the Streamlit interface.
-- **Document Processing**: The application handles the upload and processing of PDF and image files, including converting PDF files into individual image pages (to be used with Claude3 Vision).
+- **Document Processing**: The application handles the upload and processing of PDF and image files, including converting PDF files into individual image pages (to be used with Claude3 Vision). You can select between Amazon Textract or Claude 3 Vision for document processing.
 - **Text Extraction**: For PDF and image files, the application uses Amazon Textract to extract the text content from the documents. The extracted text is cached in an Amazon S3 bucket for future use.
 - **Document Classification**: Users can provide a manifest file containing a list of possible labels or categories for the documents. The application prompts the selected Claude language model with the extracted text and the list of possible labels, and the model generates a response classifying the document content into one or more of the provided labels.
 - **Model Selection**: The application supports various Claude models, including `claude-3-sonnet`, `claude-3-haiku`, `claude-instant-v1`, `claude-v2`, and `claude-v2:1`. Users can select the desired model through the Streamlit sidebar.
@@ -60,10 +62,16 @@ To stop the `tmux` session, in your ec2 terminal Press `Ctrl+b`, then `d` to det
 
 1. Launch the Streamlit application in your web browser.
 2. In the sidebar, select the desired Claude model and specify whether you want to classify labels per page or for the entire document.
-3. Upload a manifest file containing the list of possible labels and their descriptions.
-4. Upload the PDF or image files you want to classify.
-5. Click the "Classify" button to initiate the classification process.
-6. The application will display the classification results and the cost associated with using the selected model.
+3. Upload a manifest file containing the list of possible labels and their descriptions. Label names, a colon and the description. Each label-description pair per line saved in a .txt file. For Example:
+
+      drivers license : This is a US drivers license
+      W2 : This is a tax reporting form
+      Bank Statement : This is personal bank document
+      PayStub : This is an individual's pay info
+    
+5. Upload the PDF or image files you want to classify.
+6. Click the "Classify" button to initiate the classification process.
+7. The application will display the classification results and the cost associated with using the selected model.
 
 ## Contributing
 
