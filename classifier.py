@@ -22,11 +22,10 @@ config = Config(
         max_attempts = 5 ## Handle retries
     )
 )
-import pdf2image
 import re
 import base64
 from streamlit.runtime.uploaded_file_manager import UploadedFile
-
+st.set_page_config(layout="wide")
 if 'messages' not in st.session_state:
     st.session_state['messages'] = []
 if 'token' not in st.session_state:
@@ -47,13 +46,10 @@ with open('config.json') as f:
 with open('pricing.json') as f:
     pricing_file = json.load(f)
     
-DYNAMODB_TABLE=config_file["DynamodbTable"]
 BUCKET=config_file["Bucket_Name"]
 OUTPUT_TOKEN=config_file["max-output-token"]
 S3 = boto3.client('s3')
-DYNAMODB  = boto3.resource('dynamodb')
 TEXTRACT_RESULT_CACHE_PATH=config_file["textract_result_path"]
-DYNAMODB_USER=config_file["UserId"]
 REGION=config_file["bedrock-region"]
 bedrock_runtime = boto3.client(service_name='bedrock-runtime',region_name=REGION,config=config)
 PREFIX=config_file["s3_path_prefix"]
@@ -106,6 +102,8 @@ def bedrock_claude_(params,system_message, prompt,model_id,image_path=None, hand
     answer=bedrock_streemer(params,response, handler) 
     return answer
 
+
+
 def bedrock_streemer(params,response, handler):
     stream = response.get('body')
     answer = ""    
@@ -148,7 +146,7 @@ def _invoke_bedrock_with_retries(params, chat_template, question, model_id, imag
             else:
                 # Some other API error, rethrow
                 raise e
-                
+
 @st.cache_data
 def process_and_upload_files_to_s3(uploaded_files, s3_bucket, s3_prefix):
     """
@@ -336,7 +334,7 @@ def page_summary(params):
                 st.markdown(f"##### :red[{list(item_cache.keys())[0]}]")
                 if is_pdf(filee):                
                     base64_pdf = base64.b64encode(filee).decode('utf-8')
-                    pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="550" height="800" type="application/pdf"></iframe>'
+                    pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="500" height="800" type="application/pdf"></iframe>'
                     st.markdown(pdf_display, unsafe_allow_html=True)
                 elif  is_image(filee):
                     img = Image.open(io.BytesIO(filee)) 
@@ -356,7 +354,7 @@ def page_summary(params):
                 filee=item_cache[list(item_cache.keys())[st.session_state.page_slider]]
                 if is_pdf(filee):                
                     base64_pdf = base64.b64encode(filee).decode('utf-8')
-                    pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="550" height="800" type="application/pdf"></iframe>'
+                    pdf_display = F'<iframe src="data:application/pdf;base64,{base64_pdf}" width="500" height="800" type="application/pdf"></iframe>'
                     st.markdown(pdf_display, unsafe_allow_html=True)
                 elif  is_image(filee):
                     img = Image.open(io.BytesIO(filee)) 
@@ -388,7 +386,7 @@ def get_text_ocr_(file,label_per_page):
     extractor = Textractor(region_name="us-east-1")    
     image_extensions = ('.jpg', '.png', '.jpeg')
     if file_ext.lower().endswith(image_extensions):
-        if [x for x in get_s3_keys(f"{TEXTRACT_RESULT_CACHE_PATH}/") if file_base_name in x]:                  
+        if [x for x in get_s3_keys(f"{TEXTRACT_RESULT_CACHE_PATH}/") if file_base_name == x]:                  
             response = S3.get_object(Bucket=BUCKET, Key=f"{TEXTRACT_RESULT_CACHE_PATH}/{file_base_name}")            
             text = response['Body'].read()  
             return f"<{os.path.basename(file)}>\n{text}\n</{os.path.basename(file)}>\n"     
@@ -483,7 +481,6 @@ def app_sidebar():
             process_images=st.selectbox("**Document Processor**",["Textract","Claude3"],key="processor")
         else:
             process_images="Textract"
-        # labels = st.text_area(label="Label and Description",value =None, placeholder="Enter the label and description pair per line. For eg.\n 'receipt : payment recipt'\n 'license : state ID'...")
         labels = st.file_uploader("Upload manifest file", type=["txt"], accept_multiple_files=False)                      
         uploaded_files = st.file_uploader("Upload PDF or image files", type=["pdf", "png", "jpg", "jpeg"], accept_multiple_files=True)
         params={"model":model,  "file_item":uploaded_files, "processor":process_images,"label_per_page":label_per_page, "possible_labels":labels}
